@@ -28,12 +28,14 @@ class Daily_Collected_Data(Base):
 
 class Calculated_Age_Gender(Base):
     __tablename__ = 'Calculated_Age_Gender'
-    date = Column(Date, primary_key=True)
-    img_name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    date = Column(Date)
+    img_name = Column(String)
     gender = Column(Integer)
     age = Column(Integer)
     age_range = Column(String)
     times_seen = Column(Integer)
+    subscriber = Column(String)
     
     def __repr__(self):
         return "<Daily_Collected_Data(id='{}', date='{}', img_name='{}', number_of_img='{}')>"\

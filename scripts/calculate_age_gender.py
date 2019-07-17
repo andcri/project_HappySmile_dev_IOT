@@ -11,6 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, LargeBinary
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from subscriber_info import subscriber
 from datetime import datetime, date
 from keras.models import load_model
 from imutils import paths
@@ -29,6 +30,7 @@ import keras
 DATABASE_URI = 'postgres://yqjmwpmnlrrehd:55176ce134225cfd8885a8dac7402fd383cae44009905d6fdda3843b80105dda@ec2-54-75-224-168.eu-west-1.compute.amazonaws.com:5432/dmbn9tt9l3mvd'
 DATABASE_URI_LOCALE = 'postgres+psycopg2://pi:Mypassword@localhost:5432/devhappysmile'
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+USER = subscriber['name']
 
 
 genderProto = "/home/pi/Desktop/project_HappySmile_dev/ML_Models/gender_deploy.prototxt"
@@ -91,9 +93,9 @@ print(calculated_values)
 
 # this will be replaced by an upsert
 # drop columns with the date of today if they are present
-DATABASE = 'postgres+psycopg2://postgres:myPassword@localhost:5432/postgres'
+# DATABASE = 'postgres+psycopg2://postgres:myPassword@localhost:5432/postgres'
 
-engine = create_engine(DATABASE_URI_LOCALE)
+engine = create_engine(DATABASE_URI)
 
 Session = sessionmaker(bind=engine)
 
@@ -109,7 +111,8 @@ for data in calculated_values:
         gender=data[1],
         age=data[2],
         age_range=data[3],
-        times_seen = data[4]
+        times_seen = data[4],
+        subscriber = USER
     )
     s.merge(row)
 s.commit()
