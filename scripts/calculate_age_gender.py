@@ -9,7 +9,7 @@ Data Pipeline:
 from database_configuration_scripts.table_models import Daily_Unique_Id, Daily_Collected_Data, Calculated_Age_Gender
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, LargeBinary
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from subscriber_info import subscriber
 from datetime import datetime, date
@@ -101,7 +101,7 @@ Session = sessionmaker(bind=engine)
 
 s = Session()
 
-s.query(Calculated_Age_Gender).filter(Calculated_Age_Gender.date == today).delete()
+s.query(Calculated_Age_Gender).filter(and_(Calculated_Age_Gender.date == today, Calculated_Age_Gender.subscriber == USER)).delete()
 
 # start iteration of calculated values
 for data in calculated_values:
