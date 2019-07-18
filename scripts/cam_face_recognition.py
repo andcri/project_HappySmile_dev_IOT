@@ -25,7 +25,7 @@ import face_recognition
 # if this error occures in the image2 it means that the picture was not taken properly so we do nothing and we take the next one
 def same_person(historic_picture, current_picture):
 
-    image1 = face_recognition.load_image_file("/home/pi/Desktop/project_HappySmile_dev/generated_folders/tmp_img_folder/{}".format(historic_picture))
+    image1 = face_recognition.load_image_file("/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder/{}".format(historic_picture))
     image2 = current_picture
 
     try:
@@ -40,7 +40,7 @@ def same_person(historic_picture, current_picture):
 
     return results
 
-faceCascade = cv2.CascadeClassifier('../haarcascade_files/haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier('/home/pi/Desktop/project_HappySmile_dev_IOT/haarcascade_files/haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
 cap.set(3,640) # set Width
 cap.set(4,480) # set Height
@@ -68,17 +68,17 @@ while num < 1:
         crop_img = img[y: y + h, x: x + w]
         # cv2.imwrite('tmp_opencv'+str(unique_identifier)+'.jpg',crop_img)
         print(type(crop_img))
+        # check if image is blurred
+        is_not_blured = variance_of_laplacian(crop_img) >= 120
         # create folder if doesnt exists
-        if not os.path.exists('../generated_folders/tmp_img_folder'):
+        if not os.path.exists('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder'):
             print("folder doesn`t exists, creating a new one")
-            os.makedirs('../generated_folders/tmp_img_folder')
-            cv2.imwrite('../generated_folders/tmp_img_folder/opencv'+str(unique_identifier)+'.jpg',crop_img)
+            os.makedirs('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder')
         # check if the image is not blurred
         # if not blurred save it to the folder
-        is_not_blured = variance_of_laplacian(crop_img) >= 100
         if is_not_blured:
             print("good enought i save it ")
-            cv2.imwrite('../generated_folders/tmp_img_folder/opencv'+str(unique_identifier)+'.jpg',crop_img)
+            cv2.imwrite('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder/opencv'+str(unique_identifier)+'.jpg',crop_img)
             time.sleep(2)
         else:
             print("not good enough taking the next one")
@@ -87,9 +87,9 @@ while num < 1:
         # add info to the database -> Update the daily Tracked Value database with the unique_identifier value (upsert)
         variables_update(unique_identifier)
     # video feed for debug pourpose
-    cv2.imshow('video',img)
-    k = cv2.waitKey(30) & 0xff
-    if k == 27: # press 'ESC' to quit
-        break
+    # cv2.imshow('video',img)
+    # k = cv2.waitKey(30) & 0xff
+    # if k == 27: # press 'ESC' to quit
+    #     break
 cap.release()
 cv2.destroyAllWindows()

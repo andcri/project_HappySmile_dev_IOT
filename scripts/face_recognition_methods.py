@@ -6,7 +6,7 @@ import face_recognition
 
 def same_person(historic_picture, current_picture):
 
-    image1 = face_recognition.load_image_file("/home/pi/Desktop/project_HappySmile_dev/generated_folders/tmp_img_folder/{}".format(historic_picture))
+    image1 = face_recognition.load_image_file("/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder/{}".format(historic_picture))
     image2 = current_picture
 
     encoding_1 = face_recognition.face_encodings(image1)[0]

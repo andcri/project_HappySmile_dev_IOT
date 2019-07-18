@@ -22,17 +22,12 @@ from imutils import paths
 start = time.time()
 
 debug = True
-windowsImagePath = "C:\\Users\\Andrea\\Desktop\\project_HappySmile_dev\\generated_folders\\tmp_img_folder"
-imagesPath = "/home/pi/Desktop/project_HappySmile_dev/generated_folders/tmp_img_folder"
+imagesPath = "/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder"
 
 # check on wich os we are and select the correct path to use
-if platform.system() == "Linux":
-    folder_path = imagesPath
-else:
-    folder_path = windowsImagePath
+folder_path = imagesPath
 
-if debug:
-    print(folder_path)
+print(folder_path)
 # add check if we are on a linux or windows machine
 
 images_name_list = os.listdir(folder_path)
