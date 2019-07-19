@@ -6,15 +6,11 @@ another script
 TODO:
 - move functions in separate file
 - use namespaces to contain the folders paths
-- make the unique_identifier a value that we get from a database that is reinitialized to 0 every day, but if the program crushes it will
-    read his latest value and uses it in the script DONE
-
-IMPORTANT:
-
-Test in notebooks if the face_recognition can be done more efficently
 """
 from face_recognition_methods import check_if_array_equal, add_visiting_time, variance_of_laplacian
 from database_configuration_scripts.operations_on_database_methods import variables_initialization, variables_update
+from subscriber_info import subscriber
+import datetime
 import numpy as np
 import cv2
 import time
@@ -40,56 +36,67 @@ def same_person(historic_picture, current_picture):
 
     return results
 
-faceCascade = cv2.CascadeClassifier('/home/pi/Desktop/project_HappySmile_dev_IOT/haarcascade_files/haarcascade_frontalface_default.xml')
-cap = cv2.VideoCapture(0)
-cap.set(3,640) # set Width
-cap.set(4,480) # set Height
-num = 0
-previous_picture_exists = False
-# this variable will get his value from the Daily Tracked Values Table
-unique_identifier, time_spent = variables_initialization()
-while num < 1:
-    ret, img = cap.read()
-    img = cv2.flip(img, 1)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = faceCascade.detectMultiScale(
-        gray,
-        scaleFactor=1.2,
-        minNeighbors=5,
-        minSize=(20, 20)
-    )
-    for (x,y,w,h) in faces:
-        time.sleep(0.35)
-        print("found")
-        print("unique identifier {}".format(unique_identifier))
-        # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-        roi_gray = gray[y:y+h, x:x+w]
-        roi_color = img[y:y+h, x:x+w]
-        crop_img = img[y: y + h, x: x + w]
-        # cv2.imwrite('tmp_opencv'+str(unique_identifier)+'.jpg',crop_img)
-        print(type(crop_img))
-        # check if image is blurred
-        is_not_blured = variance_of_laplacian(crop_img) >= 120
-        # create folder if doesnt exists
-        if not os.path.exists('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder'):
-            print("folder doesn`t exists, creating a new one")
-            os.makedirs('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder')
-        # check if the image is not blurred
-        # if not blurred save it to the folder
-        if is_not_blured:
-            print("good enought i save it ")
-            cv2.imwrite('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder/opencv'+str(unique_identifier)+'.jpg',crop_img)
-            time.sleep(2)
-        else:
-            print("not good enough taking the next one")
-            time.sleep(2)
-        unique_identifier += 1
-        # add info to the database -> Update the daily Tracked Value database with the unique_identifier value (upsert)
-        variables_update(unique_identifier)
-    # video feed for debug pourpose
-    # cv2.imshow('video',img)
-    # k = cv2.waitKey(30) & 0xff
-    # if k == 27: # press 'ESC' to quit
-    #     break
-cap.release()
-cv2.destroyAllWindows()
+# add check regarding the time that the script is run, if the script is run before the subscriber end_daytime value the script will run
+# else the script will not run
+
+current_time = datetime.datetime.now().time()
+
+if current_time > subscriber['start_day_time'] and current_time < subscriber['end_day_time']:
+
+
+    faceCascade = cv2.CascadeClassifier('/home/pi/Desktop/project_HappySmile_dev_IOT/haarcascade_files/haarcascade_frontalface_default.xml')
+    cap = cv2.VideoCapture(0)
+    cap.set(3,640) # set Width
+    cap.set(4,480) # set Height
+    num = 0
+    previous_picture_exists = False
+    # this variable will get his value from the Daily Tracked Values Table
+    unique_identifier, time_spent = variables_initialization()
+    while num < 1:
+        ret, img = cap.read()
+        img = cv2.flip(img, 1)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.2,
+            minNeighbors=5,
+            minSize=(20, 20)
+        )
+        for (x,y,w,h) in faces:
+            time.sleep(0.35)
+            print("found")
+            print("unique identifier {}".format(unique_identifier))
+            # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+            roi_gray = gray[y:y+h, x:x+w]
+            roi_color = img[y:y+h, x:x+w]
+            crop_img = img[y: y + h, x: x + w]
+            # cv2.imwrite('tmp_opencv'+str(unique_identifier)+'.jpg',crop_img)
+            print(type(crop_img))
+            # check if image is blurred
+            is_not_blured = variance_of_laplacian(crop_img) >= 120
+            # create folder if doesnt exists
+            if not os.path.exists('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder'):
+                print("folder doesn`t exists, creating a new one")
+                os.makedirs('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder')
+            # check if the image is not blurred
+            # if not blurred save it to the folder
+            if is_not_blured:
+                print("good enought i save it ")
+                cv2.imwrite('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder/opencv'+str(unique_identifier)+'.jpg',crop_img)
+                time.sleep(2)
+            else:
+                print("not good enough taking the next one")
+                time.sleep(2)
+            unique_identifier += 1
+            # add info to the database -> Update the daily Tracked Value database with the unique_identifier value (upsert)
+            variables_update(unique_identifier)
+        # video feed for debug pourpose
+        # cv2.imshow('video',img)
+        # k = cv2.waitKey(30) & 0xff
+        # if k == 27: # press 'ESC' to quit
+        #     break
+    cap.release()
+    cv2.destroyAllWindows()
+    
+else:
+    print("it s not the time to work, sleep mode activated :)")
