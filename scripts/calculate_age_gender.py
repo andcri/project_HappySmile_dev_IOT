@@ -117,10 +117,5 @@ for data in calculated_values:
     s.merge(row)
 s.commit()
 
-
-# add values to table in database
-
-# commit changes
-
 # always close a session when we finished using it
 s.close()
