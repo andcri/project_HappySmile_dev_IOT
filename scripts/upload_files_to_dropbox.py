@@ -43,6 +43,7 @@ transferData = TransferData(DB_ACCESS_TOKEN)
 
 for image in image_name_list:
     try:
+        print("uploading image: "+image+" to dropbox")
         file_from = folderToUploadPath+'/'+image
         file_to = '/images_'+USER+'_'+TODAY+'/'+image  # The full path to upload the file to, including the file name
         transferData.upload_file(file_from, file_to)

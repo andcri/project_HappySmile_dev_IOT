@@ -73,7 +73,7 @@ if current_time > subscriber['start_day_time'] and current_time < subscriber['en
             # cv2.imwrite('tmp_opencv'+str(unique_identifier)+'.jpg',crop_img)
             print(type(crop_img))
             # check if image is blurred
-            is_not_blured = variance_of_laplacian(crop_img) >= 120
+            is_not_blured = variance_of_laplacian(crop_img) >= 100
             # create folder if doesnt exists
             if not os.path.exists('/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder'):
                 print("folder doesn`t exists, creating a new one")

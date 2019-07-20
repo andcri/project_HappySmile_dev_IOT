@@ -119,3 +119,9 @@ s.commit()
 
 # always close a session when we finished using it
 s.close()
+
+# wait for one minute after the analysis and start the upload of the files to dropbox
+time.sleep(100)
+
+# start the upload of the file to dropbox
+import upload_files_to_dropbox

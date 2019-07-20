@@ -41,7 +41,7 @@ print(images_name_list)
 new_array_filtered = is_analyzable(images_name_list, folder_path)
 
 # save the filtered images in a folder "to be uploaded"
-
+print("saving filtered images to the folder")
 for image in new_array_filtered:
     shutil.copy(imagesPath+"/"+image, filesToUploadPath)
 
@@ -131,3 +131,10 @@ write_calculated_data_to_database(send_to_database)
 end = time.time()
 
 print("total time: {}".format(end - start))
+
+# wait one minute and start the calculate_age_gender.py
+
+time.sleep(60)
+
+# start calculate_age_gender.py
+import calculate_age_gender
