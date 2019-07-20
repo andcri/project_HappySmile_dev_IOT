@@ -17,13 +17,14 @@ import time
 import os
 import platform
 import face_recognition
+import shutil
 from imutils import paths
 
 start = time.time()
 
 debug = True
 imagesPath = "/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder"
-
+filesToUploadPath = "/home/pi/Desktop/project_HappySmile_dev_IOT/files_to_upload/"
 # check on wich os we are and select the correct path to use
 folder_path = imagesPath
 
@@ -38,6 +39,11 @@ print(images_name_list)
 
 # filter only analyzable images
 new_array_filtered = is_analyzable(images_name_list, folder_path)
+
+# save the filtered images in a folder "to be uploaded"
+
+for image in new_array_filtered:
+    shutil.copy(imagesPath+"/"+image, filesToUploadPath)
 
 print('new array filtered: {}'.format(new_array_filtered))
 # check one by one if the images are representing the same person
