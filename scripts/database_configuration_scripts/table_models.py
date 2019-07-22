@@ -1,7 +1,7 @@
 # contains the models of the tables that we use in our database
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, DateTime, JSON
 
 Base = declarative_base()
 
@@ -38,5 +38,18 @@ class Calculated_Age_Gender(Base):
     subscriber = Column(String)
     
     def __repr__(self):
-        return "<Daily_Collected_Data(id='{}', date='{}', img_name='{}', number_of_img='{}')>"\
+        return "<Calculated_Age_Gender(id='{}', date='{}', img_name='{}', number_of_img='{}')>"\
                 .format(self.id, self.date, self.img_name, self.gender, self.age, self.age_range)
+
+class Logs(Base):
+    __tablename__ = 'Logs'
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime)
+    subscriber = Column(String)
+    text = Column(String)
+    added_info = Column(JSON)
+
+    
+    def __repr__(self):
+        return "<Daily_Unique_Id(date='{}', unique_image_id='{}')>"\
+                .format(self.date, self.subscriber)
