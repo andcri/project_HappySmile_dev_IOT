@@ -1,5 +1,5 @@
 from database_configuration_scripts.config import DATABASE_URI, DATABASE_URI_LOCALE
-from database_configuration_scripts.table_models import Daily_Unique_Id, Daily_Collected_Data
+from database_configuration_scripts.table_models import Daily_Unique_Id, Daily_Collected_Data, Logs
 from sqlalchemy import create_engine
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
@@ -107,9 +107,30 @@ def write_calculated_data_to_database(array_to_database, DATABASE=DATABASE_URI_L
     s.commit()
     s.close()
 
-    def get_data_values(date):
-        # get values from the day
-        pass
+def log_operations(subscriber, text='', added_info={}, DATABASE=DATABASE_URI_LOCALE):
+    """
+    logs operations info in the local database(for now)
+    """
+    timestamp = datetime.now()
+
+    engine = create_engine(DATABASE)
+
+    Session = sessionmaker(bind=engine)
+
+    s = Session()
+
+    row = Logs(
+        date=timestamp,
+        subscriber = subscriber,
+        text = text,
+        added_info = added_info
+        )
+
+    s.add(row)
+    s.commit()
+    s.close()
+
+
 
 if __name__ == "__main__":
     # first, second = variables_initialization()

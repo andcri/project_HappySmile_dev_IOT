@@ -7,6 +7,7 @@ Data Pipeline:
 
 # from database_configuration_scripts.operations_on_database_methods import get_data_values
 from database_configuration_scripts.table_models import Daily_Unique_Id, Daily_Collected_Data, Calculated_Age_Gender
+from database_configuration_scripts.operations_on_database_methods import log_operations
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, LargeBinary
 from sqlalchemy import create_engine, and_
@@ -61,6 +62,8 @@ today = date.today()
 
 rows = s.query(Daily_Collected_Data).filter(Daily_Collected_Data.date == today).all()
 
+log_operations(USER, text='Starting calculation of age and gender')
+
 calculated_values = []
 # iterate trough rows
 for row in rows:
@@ -103,6 +106,8 @@ s = Session()
 
 s.query(Calculated_Age_Gender).filter(and_(Calculated_Age_Gender.date == today, Calculated_Age_Gender.subscriber == USER)).delete()
 
+log_operations(USER, text='Write data to cloud database')
+
 # start iteration of calculated values
 for data in calculated_values:
     row = Calculated_Age_Gender(
@@ -122,6 +127,11 @@ s.close()
 
 # wait for one minute after the analysis and start the upload of the files to dropbox
 time.sleep(20)
+<<<<<<< HEAD
+=======
+
+log_operations(USER, text='Completed data transfer to database, starting upload images to dropbox folder')
+>>>>>>> a7578c65f62d87eb9823511be6198765f4d543cb
 
 # start the upload of the file to dropbox
 import upload_files_to_dropbox
