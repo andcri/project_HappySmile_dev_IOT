@@ -6,6 +6,7 @@ import datetime
 import shutil
 from subscriber_info import subscriber
 from paths import folder_paths
+from database_configuration_scripts.operations_on_database_methods import log_operations
 
 class TransferData:
     def __init__(self, access_token):
@@ -41,6 +42,8 @@ print(image_name_list)
 
 transferData = TransferData(DB_ACCESS_TOKEN)
 
+log_operations(USER, text='Starting to upload images to dropbox')
+
 for image in image_name_list:
     try:
         print("uploading image: "+image+" to dropbox")
@@ -49,6 +52,7 @@ for image in image_name_list:
         transferData.upload_file(file_from, file_to)
     except:
         print("error in uploading the files, creating a local copy of the folder with the issue")
+        log_operations(USER, text='error in uploading the files, creating a local copy of the folder with the issue')
         # save the files that could t be transferd to dropbox to a backup folder
         # create the folder specific to the current day and save inside the files
         if not os.path.exists(folderBackup+'/'+TODAY):
@@ -57,6 +61,7 @@ for image in image_name_list:
         # save images inside the folder
         shutil.copy(folderToUploadPath+'/'+image, folderBackup+'/'+TODAY+'/'+image)
 
+log_operations(USER, text='Starting to remove images from tmp folder and to_upload folder')
 # remove all the files in the to_upload folder and tmp folder
 # for image in image_name_list:
 #     os.remove(folderToUploadPath+"/"+image)

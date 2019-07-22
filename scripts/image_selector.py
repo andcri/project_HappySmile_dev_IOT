@@ -1,4 +1,3 @@
-# TODO: implement a way to check the os and assign the correct path
 """
 This script will analyze all the previously collected images from the cam_face_recognition script
 and will determin which one are representing the same person and wich one are not.
@@ -9,8 +8,9 @@ from sqlalchemy import Column, Integer, String, Date, LargeBinary
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, date
-from database_configuration_scripts.operations_on_database_methods import write_calculated_data_to_database
+from database_configuration_scripts.operations_on_database_methods import write_calculated_data_to_database, log_operations
 from utility_methods import is_same_person, is_analyzable, get_image_clarity
+from subscriber_info import subscriber
 import numpy as np
 import cv2
 import time
@@ -22,11 +22,11 @@ from imutils import paths
 
 start = time.time()
 
-debug = True
 imagesPath = "/home/pi/Desktop/project_HappySmile_dev_IOT/generated_folders/tmp_img_folder"
 filesToUploadPath = "/home/pi/Desktop/project_HappySmile_dev_IOT/files_to_upload/"
 # check on wich os we are and select the correct path to use
 folder_path = imagesPath
+USER = subscriber['name']
 
 print(folder_path)
 # add check if we are on a linux or windows machine
@@ -49,6 +49,8 @@ print('new array filtered: {}'.format(new_array_filtered))
 # check one by one if the images are representing the same person
 
 print("Bucketing picture that are representing the same person")
+
+log_operations(USER, text='Bucketing picture that are representing the same person')
 
 pointer0 = 0
 pointer1 = 1
@@ -100,6 +102,7 @@ print(final_array)
 # check for highes clarity picture for each of the final array entry
 
 print("Exracting highest clarity picture for each person")
+log_operations(USER, text='Exracting highest clarity picture for each person')
 
 send_to_database = []
 for image_list in final_array:
@@ -121,6 +124,8 @@ for image_list in final_array:
     # insert all the data to a new array
     send_to_database.append([image_to_send, len(image_list), path_to_use+image_to_send])
 
+log_operations(USER, text='Sending collected data to database')
+
 print("++")
 print(send_to_database)
 print("++")
@@ -134,7 +139,7 @@ print("total time: {}".format(end - start))
 
 # wait one minute and start the calculate_age_gender.py
 
-time.sleep(60)
+time.sleep(20)
 
 # start calculate_age_gender.py
 import calculate_age_gender
