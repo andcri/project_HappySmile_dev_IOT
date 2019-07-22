@@ -127,11 +127,8 @@ s.close()
 
 # wait for one minute after the analysis and start the upload of the files to dropbox
 time.sleep(20)
-<<<<<<< HEAD
-=======
 
 log_operations(USER, text='Completed data transfer to database, starting upload images to dropbox folder')
->>>>>>> a7578c65f62d87eb9823511be6198765f4d543cb
 
 # start the upload of the file to dropbox
 import upload_files_to_dropbox

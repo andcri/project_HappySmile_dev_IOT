@@ -52,17 +52,18 @@ for image in image_name_list:
         transferData.upload_file(file_from, file_to)
     except:
         print("error in uploading the files, creating a local copy of the folder with the issue")
-        log_operations(USER, text='error in uploading the files, creating a local copy of the folder with the issue')
         # save the files that could t be transferd to dropbox to a backup folder
         # create the folder specific to the current day and save inside the files
         if not os.path.exists(folderBackup+'/'+TODAY):
+            log_operations(USER, text='error in uploading the files, creating a local copy of the folder with the issue')
             print("folder doesn`t exists, creating a new one")
             os.makedirs(folderBackup+'/'+TODAY)
         # save images inside the folder
         shutil.copy(folderToUploadPath+'/'+image, folderBackup+'/'+TODAY+'/'+image)
 
-log_operations(USER, text='Starting to remove images from tmp folder and to_upload folder')
+log_operations(USER, text='Upload completed, starting to remove images from tmp folder and to_upload folder')
 # remove all the files in the to_upload folder and tmp folder
 # for image in image_name_list:
 #     os.remove(folderToUploadPath+"/"+image)
 #     os.remove(folderTmp+"/"+image)
+log_operations(USER, text='images removed, going to sleep :)')
