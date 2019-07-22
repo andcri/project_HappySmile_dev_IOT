@@ -38,6 +38,9 @@ def same_person(historic_picture, current_picture):
 
 # add check regarding the time that the script is run, if the script is run before the subscriber end_daytime value the script will run
 # else the script will not run
+print(datetime.datetime.now().time())
+
+time.sleep(120)
 
 current_time = datetime.datetime.now().time()
 
