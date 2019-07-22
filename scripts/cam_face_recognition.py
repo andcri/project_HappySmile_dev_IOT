@@ -8,7 +8,7 @@ TODO:
 - use namespaces to contain the folders paths
 """
 from face_recognition_methods import check_if_array_equal, add_visiting_time, variance_of_laplacian
-from database_configuration_scripts.operations_on_database_methods import variables_initialization, variables_update
+from database_configuration_scripts.operations_on_database_methods import variables_initialization, variables_update, log_operations
 from subscriber_info import subscriber
 import datetime
 import numpy as np
@@ -38,14 +38,16 @@ def same_person(historic_picture, current_picture):
 
 # add check regarding the time that the script is run, if the script is run before the subscriber end_daytime value the script will run
 # else the script will not run
+USER = subscriber['name']
 print(datetime.datetime.now().time())
 
-time.sleep(120)
+#time.sleep(120)
 
 current_time = datetime.datetime.now().time()
 
 if current_time > subscriber['start_day_time'] and current_time < subscriber['end_day_time']:
-
+    
+    log_operations(USER, text='Starting face recording')
 
     faceCascade = cv2.CascadeClassifier('/home/pi/Desktop/project_HappySmile_dev_IOT/haarcascade_files/haarcascade_frontalface_default.xml')
     cap = cv2.VideoCapture(0)
@@ -102,4 +104,5 @@ if current_time > subscriber['start_day_time'] and current_time < subscriber['en
     cv2.destroyAllWindows()
     
 else:
+    log_operations(USER, text='it s not the time to work, sleep mode activated :)')
     print("it s not the time to work, sleep mode activated :)")
