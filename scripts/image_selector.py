@@ -134,7 +134,7 @@ print("total time: {}".format(end - start))
 
 # wait one minute and start the calculate_age_gender.py
 
-time.sleep(60)
+time.sleep(20)
 
 # start calculate_age_gender.py
 import calculate_age_gender

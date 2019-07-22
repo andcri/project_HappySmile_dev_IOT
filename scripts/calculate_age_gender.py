@@ -121,7 +121,7 @@ s.commit()
 s.close()
 
 # wait for one minute after the analysis and start the upload of the files to dropbox
-time.sleep(100)
+time.sleep(20)
 
 # start the upload of the file to dropbox
 import upload_files_to_dropbox
