@@ -41,7 +41,7 @@ def same_person(historic_picture, current_picture):
 USER = subscriber['name']
 print(datetime.datetime.now().time())
 
-#time.sleep(120)
+time.sleep(120)
 
 current_time = datetime.datetime.now().time()
 
