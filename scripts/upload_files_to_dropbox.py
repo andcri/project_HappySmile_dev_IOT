@@ -42,28 +42,27 @@ print(image_name_list)
 
 transferData = TransferData(DB_ACCESS_TOKEN)
 
-log_operations(USER, text='Starting to upload images to dropbox')
+log_operations(USER, text='Zipping images')
 
-for image in image_name_list:
-    try:
-        print("uploading image: "+image+" to dropbox")
-        file_from = folderToUploadPath+'/'+image
-        file_to = '/images_'+USER+'_'+TODAY+'/'+image  # The full path to upload the file to, including the file name
-        transferData.upload_file(file_from, file_to)
-    except:
-        print("error in uploading the files, creating a local copy of the folder with the issue")
-        # save the files that could t be transferd to dropbox to a backup folder
-        # create the folder specific to the current day and save inside the files
-        if not os.path.exists(folderBackup+'/'+TODAY):
-            log_operations(USER, text='error in uploading the files, creating a local copy of the folder with the issue')
-            print("folder doesn`t exists, creating a new one")
-            os.makedirs(folderBackup+'/'+TODAY)
-        # save images inside the folder
-        shutil.copy(folderToUploadPath+'/'+image, folderBackup+'/'+TODAY+'/'+image)
+os.system("zip -r {0}/images_{1}_{2} {0}".format(folderToUploadPath, USER, TODAY))
+
+try:
+    log_operations(USER, text='uploading zip file to dropbox')
+    print("uploading zip file to dropbox")
+    file_from = folderToUploadPath+"/images_"+USER+'_'+TODAY+".zip"
+    file_to = "/images_"+USER+"_"+TODAY
+    transferData.upload_file(file_from, file_to)
+except:
+    print("error cannot upload the file")
+    log_operations(USER, text="error in uploading the file, creating a local copy of the folder to temporary save the file")
+    # save the zip file inside the backup folder
+    shutil.copy(folderToUploadPath+"/images_"+USER+'_'+TODAY+".zip", folderBackup+"/images_"+USER+'_'+TODAY+".zip")
 
 log_operations(USER, text='Upload completed, starting to remove images from tmp folder and to_upload folder')
 # remove all the files in the to_upload folder and tmp folder
-# for image in image_name_list:
-#     os.remove(folderToUploadPath+"/"+image)
-#     os.remove(folderTmp+"/"+image)
+shutil.rmtree(folderToUploadPath)
+shutil.rmtree(folderTmp)
+# recreate the removed directories
+os.makedirs(folderToUploadPath)
+os.makedirs(folderTmp)
 log_operations(USER, text='images removed, going to sleep :)')
